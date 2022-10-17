@@ -48,8 +48,8 @@ TIM_HandleTypeDef htim2;
 
 /* Private function prototypes -----------------------------------------------*/
 void SystemClock_Config(void);
-static void MX_TIM2_Init(void);
 static void MX_GPIO_Init(void);
+static void MX_TIM2_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -155,60 +155,74 @@ void updateClockBuffer(){
 
 const int MAX_LED_MATRIX = 8;
 int index_led_matrix = 0;
-uint16_t matrix_buffer[8] = {0xFF00 , 0x8300 , 0xF500 , 0xF600 , 0xF500 , 0x8300 , 0xFF00 , 0xFF00};
+uint16_t matrix_buffer1[8] = {0xF300 , 0xE100 , 0xC100 , 0x8300 , 0x8300 , 0xC100 , 0xE100, 0xF300};
+uint16_t matrix_buffer2[8] = {0xF300 , 0xED00 , 0xDD00 , 0xBB00 , 0xBB00 , 0xDD00 , 0xED00, 0xF300};
+int state = 0;
 void updateLEDMatrix(int index){
 	HAL_GPIO_WritePin(GPIOA, 0xFFFF, SET);
 	HAL_GPIO_WritePin(GPIOB, 0xFFFF, RESET);
+
 	switch(index){
-	case 0:
+	case 0: //Cot 0
 		HAL_GPIO_WritePin(GPIOA, 0x04, RESET);
 		HAL_GPIO_WritePin(GPIOA, 0xFC08, SET);
 
-		HAL_GPIO_WritePin(GPIOB, matrix_buffer[0], SET);
+		if(state == 0) HAL_GPIO_WritePin(GPIOB, matrix_buffer1[0], SET);
+		else HAL_GPIO_WritePin(GPIOB, matrix_buffer2[0], SET);
 		break;
-	case 1:
+	case 1: //Cot 1
 		HAL_GPIO_WritePin(GPIOA, 0x08, RESET);
 		HAL_GPIO_WritePin(GPIOA, 0xFC04, SET);
 
-		HAL_GPIO_WritePin(GPIOB, matrix_buffer[1], SET);
+		if(state == 0) HAL_GPIO_WritePin(GPIOB, matrix_buffer1[1], SET);
+		else HAL_GPIO_WritePin(GPIOB, matrix_buffer2[1], SET);
 		break;
-	case 2:
+	case 2: //Cot 2
 		HAL_GPIO_WritePin(GPIOA, 0x400, RESET);
 		HAL_GPIO_WritePin(GPIOA, 0xF80C, SET);
 
-		HAL_GPIO_WritePin(GPIOB, matrix_buffer[2], SET);
+		if(state == 0) HAL_GPIO_WritePin(GPIOB, matrix_buffer1[2], SET);
+		else HAL_GPIO_WritePin(GPIOB, matrix_buffer2[2], SET);
 		break;
-	case 3:
+	case 3: //Cot 3
 		HAL_GPIO_WritePin(GPIOA, 0x800, RESET);
 		HAL_GPIO_WritePin(GPIOA, 0xF40C, SET);
 
-		HAL_GPIO_WritePin(GPIOB, matrix_buffer[3], SET);
+		if(state == 0) HAL_GPIO_WritePin(GPIOB, matrix_buffer1[3], SET);
+		else HAL_GPIO_WritePin(GPIOB, matrix_buffer2[3], SET);
 		break;
-	case 4:
+	case 4: //Cot 4
 		HAL_GPIO_WritePin(GPIOA, 0x1000, RESET);
 		HAL_GPIO_WritePin(GPIOA, 0xEC0C, SET);
 
-		HAL_GPIO_WritePin(GPIOB,matrix_buffer[4], SET);
+		if(state == 0) HAL_GPIO_WritePin(GPIOB,matrix_buffer1[4], SET);
+		else HAL_GPIO_WritePin(GPIOB, matrix_buffer2[4], SET);
 		break;
-	case 5:
+	case 5: //Cot 5
 		HAL_GPIO_WritePin(GPIOA, 0x2000, RESET);
 		HAL_GPIO_WritePin(GPIOA, 0xDC0C, SET);
 
-		HAL_GPIO_WritePin(GPIOB, matrix_buffer[5], SET);
+		if(state == 0) HAL_GPIO_WritePin(GPIOB, matrix_buffer1[5], SET);
+		else HAL_GPIO_WritePin(GPIOB, matrix_buffer2[5], SET);
 		break;
-	case 6:
+	case 6: //Cot 6
 		HAL_GPIO_WritePin(GPIOA, 0x4000, RESET);
 		HAL_GPIO_WritePin(GPIOA, 0xBC0C, SET);
 
-		HAL_GPIO_WritePin(GPIOB, matrix_buffer[6], SET);
+		if(state == 0) HAL_GPIO_WritePin(GPIOB, matrix_buffer1[6], SET);
+		else HAL_GPIO_WritePin(GPIOB, matrix_buffer2[6], SET);
 		break;
-	case 7:
+	case 7: //Cot 7
 		HAL_GPIO_WritePin(GPIOA, 0x8000, RESET);
 		HAL_GPIO_WritePin(GPIOA, 0x7C0C, SET);
 
-		HAL_GPIO_WritePin(GPIOB, matrix_buffer[7], SET);
+		if(state == 0) HAL_GPIO_WritePin(GPIOB, matrix_buffer1[7], SET);
+		else HAL_GPIO_WritePin(GPIOB, matrix_buffer2[7], SET);
 		break;
 	default:
+		HAL_GPIO_WritePin(GPIOA, 0xFFFF, RESET);
+		HAL_GPIO_WritePin(GPIOA, 0x0000, SET);
+
 		break;
 	}
 }
@@ -241,8 +255,8 @@ int main(void)
   /* USER CODE END SysInit */
 
   /* Initialize all configured peripherals */
-  MX_TIM2_Init();
   MX_GPIO_Init();
+  MX_TIM2_Init();
   /* USER CODE BEGIN 2 */
   HAL_TIM_Base_Start_IT(&htim2);
   /* USER CODE END 2 */
@@ -253,14 +267,45 @@ int main(void)
   setTimer2(100);
   while (1)
   {
+	  /*
+	  //Dieu chinh LED 7 doan
 	  if(timer1_flag == 1){
-		  if(index_led_matrix > 7) index_led_matrix = 0;
+		  setTimer1(10);
+
+		  second ++;
+		  if( second >= 60) {
+			  second = 0;
+			  minute ++;
+		  }
+		  if( minute >= 60) {
+			  minute = 0;
+			  hour ++;
+		  }
+		  if( hour >=24){
+			  hour = 0;
+		  }
+		  updateClockBuffer ();
+
+		  if(index_led >= MAX_LED) index_led = 0;
+		  update7SEG(index_led++);
+	  }
+	  //Dieu chinh LED don
+	  if(timer2_flag == 1){
+		  setTimer2(100);
+		  HAL_GPIO_TogglePin(DOT_GPIO_Port, DOT_Pin);
+	  }
+	  */
+	  if(timer1_flag == 1){
+		  if(index_led_matrix > 7) {
+			  index_led_matrix = 0;
+			  state = 1 - state;
+		  }
 		  updateLEDMatrix(index_led_matrix++);
 		  setTimer1(1);
 	  }
 
 
-    /* USER CODE END WHILE */
+	  /* USER CODE END WHILE */
 
     /* USER CODE BEGIN 3 */
   }
@@ -323,7 +368,7 @@ static void MX_TIM2_Init(void)
   htim2.Instance = TIM2;
   htim2.Init.Prescaler = 8000;
   htim2.Init.CounterMode = TIM_COUNTERMODE_UP;
-  htim2.Init.Period = 8;
+  htim2.Init.Period = 10;
   htim2.Init.ClockDivision = TIM_CLOCKDIVISION_DIV1;
   htim2.Init.AutoReloadPreload = TIM_AUTORELOAD_PRELOAD_DISABLE;
   if (HAL_TIM_Base_Init(&htim2) != HAL_OK)
