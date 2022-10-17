@@ -141,6 +141,16 @@ void update7SEG(int index){
 			break;
 	}
 }
+
+int hour = 15, minute = 8, second = 50;
+void updateClockBuffer(){
+	//set buffer hour
+	led_buffer[0] = hour/10;
+	led_buffer[1] = hour%10;
+	//set buffer minute
+	led_buffer[2] = minute/10;
+	led_buffer[3] = minute%10;
+}
 /* USER CODE END 0 */
 
 /**
@@ -178,13 +188,28 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  setTimer1(25);
+  setTimer1(10);
   setTimer2(100);
   while (1)
   {
 	  //Dieu chinh LED 7 doan
 	  if(timer1_flag == 1){
-		  setTimer1(25);
+		  setTimer1(10);
+
+		  second ++;
+		  if( second >= 60) {
+			  second = 0;
+			  minute ++;
+		  }
+		  if( minute >= 60) {
+			  minute = 0;
+			  hour ++;
+		  }
+		  if( hour >=24){
+			  hour = 0;
+		  }
+		  updateClockBuffer ();
+
 		  if(index_led >= MAX_LED) index_led = 0;
 		  update7SEG(index_led++);
 	  }
