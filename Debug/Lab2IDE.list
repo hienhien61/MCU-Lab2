@@ -403,10 +403,10 @@ void update7SEG(int index){
  8000384:	20000000 	.word	0x20000000
 
 08000388 <main>:
+/**
   * @brief  The application entry point.
   * @retval int
   */
-
 int main(void)
 {
  8000388:	b580      	push	{r7, lr}
@@ -442,8 +442,8 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  setTimer1(50);
- 80003a2:	2032      	movs	r0, #50	; 0x32
+  setTimer1(25);
+ 80003a2:	2019      	movs	r0, #25
  80003a4:	f000 f91c 	bl	80005e0 <setTimer1>
   setTimer2(100);
  80003a8:	2064      	movs	r0, #100	; 0x64
@@ -456,8 +456,8 @@ int main(void)
  80003b0:	681b      	ldr	r3, [r3, #0]
  80003b2:	2b01      	cmp	r3, #1
  80003b4:	d112      	bne.n	80003dc <main+0x54>
-		  setTimer1(50);
- 80003b6:	2032      	movs	r0, #50	; 0x32
+		  setTimer1(25);
+ 80003b6:	2019      	movs	r0, #25
  80003b8:	f000 f912 	bl	80005e0 <setTimer1>
 		  if(index_led >= MAX_LED) index_led = 0;
  80003bc:	4b0f      	ldr	r3, [pc, #60]	; (80003fc <main+0x74>)

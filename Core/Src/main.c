@@ -147,7 +147,6 @@ void update7SEG(int index){
   * @brief  The application entry point.
   * @retval int
   */
-
 int main(void)
 {
   /* USER CODE BEGIN 1 */
@@ -179,13 +178,13 @@ int main(void)
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
-  setTimer1(50);
+  setTimer1(25);
   setTimer2(100);
   while (1)
   {
 	  //Dieu chinh LED 7 doan
 	  if(timer1_flag == 1){
-		  setTimer1(50);
+		  setTimer1(25);
 		  if(index_led >= MAX_LED) index_led = 0;
 		  update7SEG(index_led++);
 	  }
